@@ -1,8 +1,7 @@
 # CLAUDE.md — Mermug's ship's docs
 
 This repository is the ship's documentation for **Mermug**, a 1994 Beneteau
-First 42s7: procedures, systems reference, the changelog and the captain's
-log. The docs moved here from `zackphillips/zackphillips.github.io` (the
+First 42s7: procedures, systems reference and the changelog. The docs moved here from `zackphillips/zackphillips.github.io` (the
 mermug.com tracker) with their history. Every `.md` file
 under `docs/` is published as a page of a static GitHub Pages site that works
 offline on a phone. `AGENTS.md` is a symlink to this file.
@@ -56,7 +55,6 @@ new one; most subjects already have a home.
 | `planned-projects.md` | Maintenance | Rollup of every Planned item |
 | `project-ideas.md` | Maintenance | Longer design notes for projects not yet planned |
 | `maintenance.md` | Maintenance | Rollup of every recurring Maintenance item, with Last Done |
-| `captains-log.md` | Voyages | Voyage-by-voyage log, newest first |
 | `_template.md` | (draft) | Starting point for a new document; not published |
 
 Front matter is flat `key: value` (title, category, order, description).
@@ -109,8 +107,9 @@ Front matter is flat `key: value` (title, category, order, description).
   order; append new ones after the last dated entry in the `## 2025`
   section (it holds everything since purchase). Then update Last Done in
   `maintenance.md` and the affected `systems.md` section.
-- **Voyages, and maintenance done underway** → `captains-log.md`, newest
-  first under `## Log`, in the format given in that file's comment.
+- **Voyages** are not logged here. The voyage log lives with the tracker
+  in `zackphillips/zackphillips.github.io`; do not add voyage or trip
+  entries to this repository.
 
 ## Working here
 

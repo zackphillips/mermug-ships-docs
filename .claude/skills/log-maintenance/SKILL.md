@@ -1,9 +1,9 @@
 ---
 name: log-maintenance
-description: Record work done on Mermug (repair, service, install, part replacement, haul-out, inspection, fault) or a voyage in the ship's docs. Use when told about maintenance or a trip, or handed an invoice or receipt.
+description: Record work done on Mermug (repair, service, install, part replacement, haul-out, inspection, fault) in the ship's docs. Use when told about maintenance or handed an invoice or receipt.
 ---
 
-# Log work or a voyage
+# Log work
 
 ## Work at the dock or on the hard → `docs/changelog.md`
 
@@ -30,11 +30,11 @@ description: Record work done on Mermug (repair, service, install, part replacem
    - `planned-projects.md`: tick or remove a project the work completes,
      and remove its `Planned` tag in `systems.md`.
 
-## A voyage, or maintenance done underway → `docs/captains-log.md`
+## Voyages
 
-Add the entry under `## Log`, newest first, in the format in that file's
-comment (crew, conditions, notes; underway maintenance gets the
-Maintenance tag).
+Not logged here: the voyage log lives with the tracker in
+`zackphillips/zackphillips.github.io`. Maintenance done underway still goes
+in `changelog.md` as above.
 
 ## Then
 
