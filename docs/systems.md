@@ -1253,7 +1253,7 @@ and marine rail hardware:
 | Adafruit SGP30 | Air quality (TVOC / eCO2) | Aboard (see `info.yaml`) |
 
 ### Raspberry Pi
-- **Model**: Raspberry Pi 4, 16 GB
+- **Model**: Raspberry Pi 5, 16 GB
 - **Location**: [nav station / electrical compartment]
 - **OS**: OpenPlotter (built on Raspberry Pi OS, bookworm or later)
 - **HAT**: MacArthur HAT, with the following hardwired connections:
