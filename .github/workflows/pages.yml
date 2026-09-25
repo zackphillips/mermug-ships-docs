@@ -1,0 +1,60 @@
+name: Pages
+
+# Every push to main rebuilds docs/index.json and deploys the site. Pull
+# requests run the same build with --check, so a broken link or an untitled
+# document fails before it merges.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history: "Updated" dates come from git log
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check docs
+        run: node scripts/build-index.mjs --check
+
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          cp -r index.html manifest.json sw.js assets docs _site/
+          find _site/docs -name 'AGENTS.md' -o -name 'CLAUDE.md' -o -name 'README.md' | xargs -r rm -f
+          touch _site/.nojekyll
+          sed -i "s/const BUILD_ID    = 'dev';/const BUILD_ID    = '${GITHUB_SHA::12}';/" _site/sw.js
+          grep -q "${GITHUB_SHA::12}" _site/sw.js
+          node scripts/build-index.mjs --out _site
+
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

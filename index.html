@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ship's Docs — Mermug</title>
+  <meta name="description" content="Standard operating procedures, systems reference and checklists for Mermug, a 1994 Beneteau First 42s7." />
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="Mermug — Ship's Docs" />
+  <meta property="og:description" content="Standard operating procedures, systems reference and checklists for Mermug." />
+
+  <link rel="icon" href="assets/icon.svg" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#b85010" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Mermug Docs" />
+  <link rel="apple-touch-icon" href="assets/icon.svg" />
+  <link rel="stylesheet" href="assets/styles.css" />
+
+  <!-- Set the theme before first paint so the page does not flash light. -->
+  <script>
+    try {
+      document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'marine');
+    } catch { document.documentElement.setAttribute('data-theme', 'marine'); }
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+      });
+    }
+  </script>
+</head>
+<body>
+  <button id="darkModeToggle" class="floating-dark-mode-btn">Marine</button>
+  <div class="container">
+
+    <div id="status-hero">
+      <div class="status-hero__left">
+        <span id="status-vessel">Mermug</span>
+      </div>
+      <div class="status-hero__right">
+        <div id="status-sentence">Ship's Docs — procedures &amp; systems reference</div>
+        <div id="status-age">1994 Beneteau First 42s7</div>
+      </div>
+    </div>
+
+    <div class="docs-layout">
+
+      <aside class="docs-sidebar" id="docs-sidebar">
+        <label class="docs-search" for="docs-search-input">
+          <span class="docs-search__icon" aria-hidden="true">⌕</span>
+          <input
+            id="docs-search-input"
+            type="search"
+            placeholder="Search documents…"
+            autocomplete="off"
+            spellcheck="false"
+          />
+        </label>
+        <nav class="docs-nav" id="docs-nav" aria-label="Documents">
+          <div class="docs-nav__empty">Loading documents…</div>
+        </nav>
+      </aside>
+
+      <main class="docs-main" id="docs-main">
+        <div class="docs-doc-header" id="docs-doc-header" style="display:none;">
+          <h1 id="docs-doc-title"></h1>
+          <div class="docs-doc-meta" id="docs-doc-meta"></div>
+        </div>
+        <article class="docs-article markdown-body" id="docs-article">
+          <p class="docs-placeholder">Loading…</p>
+        </article>
+      </main>
+
+    </div>
+  </div>
+
+  <div class="footer">
+    <div><a href="https://github.com/zackphillips/mermug-ships-docs" target="_blank" rel="noopener">zackphillips/mermug-ships-docs</a></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+  <script src="assets/constants.js"></script>
+  <script src="assets/docs.js"></script>
+</body>
+</html>
