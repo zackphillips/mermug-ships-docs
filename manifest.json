@@ -1,0 +1,19 @@
+{
+  "name": "Mermug Ship's Docs",
+  "short_name": "Mermug Docs",
+  "description": "Procedures, systems reference and checklists for Mermug.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0c1520",
+  "theme_color": "#b85010",
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
