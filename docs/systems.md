@@ -1230,7 +1230,7 @@ and marine rail hardware:
 - Writes JSON to `data/telemetry/` and commits to GitHub.
 - GitHub Pages serves the static site.
 - Privacy zone suppresses positions within 200 m of South Beach Harbor.
-- See [AGENTS.md](../AGENTS.md) and [README.md](../README.md) for full technical details.
+- See the tracker repo's [AGENTS.md](https://github.com/zackphillips/zackphillips.github.io/blob/main/AGENTS.md) and [README.md](https://github.com/zackphillips/zackphillips.github.io/blob/main/README.md) for full technical details.
 
 ### Internet Connectivity (Cellular Hotspot)
 - **Device**: Google Pixel 4a, rooted, with a Visible Plus SIM plan.
@@ -1277,12 +1277,12 @@ publishes [mermug.com](https://mermug.com). The Pi runs
 `scripts/update_signalk_data.py`, which polls the onboard SignalK server,
 writes the results as JSON under `data/telemetry/`, and commits/pushes
 those files to this repo; GitHub Pages serves the static site straight
-from the repo, so there's no separate backend or database. The Ship's
-Docs you're reading right now are just the Markdown files under `docs/`
-in the same repo, rendered client-side — editing a `.md` file (even from
-the GitHub web UI) updates the site on the next push. See the repo's
-[README](../README.md) and [AGENTS.md](../AGENTS.md) for the full
-technical writeup.
+from the repo, so there's no separate backend or database. See the repo's
+[README](https://github.com/zackphillips/zackphillips.github.io/blob/main/README.md) and [AGENTS.md](https://github.com/zackphillips/zackphillips.github.io/blob/main/AGENTS.md) for the full
+technical writeup. The Ship's Docs you're reading now moved out of that
+repo to [`zackphillips/mermug-ships-docs`](https://github.com/zackphillips/mermug-ships-docs):
+Markdown files under `docs/`, rendered client-side, so editing a `.md`
+file (even from the GitHub web UI) updates the site on the next push.
 
 - **Installed at**: `~/code/zackphillips.github.io` on the Pi.
 - **Claude Code** (used to help maintain the Pi and this repo) is

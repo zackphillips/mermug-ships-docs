@@ -14,9 +14,8 @@ installs, see the [Vessel Changelog](changelog.md); for what's coming due,
 see [Scheduled Maintenance](maintenance.md).
 
 <!--
-New entry? Click "Edit on GitHub" at the top of this page — or, from the
-Voyages tab on the tracker, open a trip and click "Log this voyage" — to
-open this file in the GitHub web editor. Add your entry under "## Log",
+New entry? Click "Edit on GitHub" at the top of this page to open this
+file in the GitHub web editor, or ask Claude Code in this repository. Add your entry under "## Log",
 newest entries first, then commit.
 
 You don't need push access to do this: if you're signed in to GitHub but

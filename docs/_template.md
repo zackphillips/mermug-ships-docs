@@ -9,8 +9,8 @@ description: One sentence describing what this document covers.
 
 <!--
 Copy this file to docs/<something>.md to start a new document. The leading
-underscore keeps this template off the site — build_docs_index.py treats
-`_`-prefixed files as drafts.
+underscore keeps this template off the site — scripts/build-index.mjs
+treats `_`-prefixed files as drafts.
 
 The front matter above is entirely optional. Without it:
   title       ← the first `# H1` below, else the filename

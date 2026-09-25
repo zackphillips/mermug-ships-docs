@@ -172,7 +172,9 @@ export function findBrokenTargets(doc, exists) {
       if (!target) continue;
       const resolved = posix.normalize(posix.join(posix.dirname(doc.path), target));
       if (!bang && !resolved.toLowerCase().endsWith('.md')) continue;
-      if (!exists(resolved)) {
+      if (!resolved.startsWith(`${DOCS_DIR}/`)) {
+        problems.push(`${doc.path}: ${bang ? 'image' : 'link'} "${raw}" → ${resolved} is outside ${DOCS_DIR}/ and is not published; use an absolute GitHub URL`);
+      } else if (!exists(resolved)) {
         problems.push(`${doc.path}: ${bang ? 'image' : 'link'} "${raw}" → ${resolved} does not exist`);
       }
     }

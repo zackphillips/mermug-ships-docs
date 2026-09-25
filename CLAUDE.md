@@ -1,7 +1,9 @@
 # CLAUDE.md — Mermug's ship's docs
 
 This repository is the ship's documentation for **Mermug**, a 1994 Beneteau
-First 42s7: procedures, systems notes, the maintenance log. Every `.md` file
+First 42s7: procedures, systems reference, the changelog and the captain's
+log. The docs moved here from `zackphillips/zackphillips.github.io` (the
+mermug.com tracker) with their history. Every `.md` file
 under `docs/` is published as a page of a static GitHub Pages site that works
 offline on a phone. `AGENTS.md` is a symlink to this file.
 
@@ -12,8 +14,7 @@ Read this file before changing anything.
 | Path | What it is | Edit? |
 |---|---|---|
 | `docs/**.md` | The documents | **Yes** — this is the job |
-| `docs/**/images/*` | Photos and diagrams referenced by a document | Yes |
-| `docs/maintenance/log.md` | The maintenance log, newest first | Add entries at the top only |
+| `docs/images/*` | Photos and diagrams referenced by a document | Yes |
 | `index.html`, `sw.js`, `manifest.json`, `assets/` | The reader (ported from `signalk-github-pages`) | Only when asked to change the site |
 | `scripts/build-index.mjs` | Builds `docs/index.json`; `--check` validates | Only when asked |
 | `.github/workflows/pages.yml` | Checks PRs, deploys `main` to Pages | Only when asked |
@@ -37,94 +38,79 @@ node scripts/build-index.mjs --check
 To preview locally: `node scripts/build-index.mjs && python3 -m http.server 8000`,
 then open `http://localhost:8000/`.
 
-## Document format
+## The documents
 
-Front matter is optional and flat (`key: value`, one per line; nothing nested):
+Flat files under `docs/`, each with front matter setting its category and
+order. Revise the existing document that covers a subject before creating a
+new one; most subjects already have a home.
 
-```markdown
----
-title: Man Overboard
-category: Operations
-order: 10
----
-
-# Man Overboard
-
-Stop the boat. Throw flotation. Assign a spotter.
-```
-
-- **Title**: `title:` or the first `# H1`. One of them is required.
-- **Category** groups the sidebar. Default is the top-level folder name
-  (`docs/systems/x.md` → `Systems`), else `General`. `Operations`, `Systems`,
-  `Maintenance` and `Voyages` sort first, in that order; anything else sorts
-  alphabetically after.
-- **Order** sorts within a category, low first. Default 100.
-- **Description** for the search index defaults to the first paragraph.
-- A file whose name starts with `_` is a draft: committed, not published.
-
-Where files go:
-
-| Category | Folder | Examples |
+| File | Category | What it holds |
 |---|---|---|
-| Operations | `docs/operations/` | MOB, reefing, anchoring, engine start, departure checklist |
-| Systems | `docs/systems/` | Electrical, plumbing, rig, Signal K / N2K network, engine |
-| Maintenance | `docs/maintenance/` | Service intervals, spares list, winterizing, the log |
-| Voyages | `docs/voyages/` | Passage notes, `YYYY-MM-DD-<destination>.md` |
+| `operations.md` | Operations | Checklists and every stepwise how-to: departure, engine start, sails, anchoring, fueling, tanks, propane, heads, emergencies, radio |
+| `mob-procedure.md` | Operations | Man overboard |
+| `debugging.md` | Operations | Fault-finding |
+| `signalk.md` | Systems | Signal K server, data sources, sensors, plugins, alarms |
+| `remote-access.md` | Systems | VPN into the boat |
+| `systems.md` | Systems | The source of truth for what is installed, numbered §1–13 |
+| `changelog.md` | Maintenance | Repairs, installs, upgrades, haul-outs: the full history |
+| `planned-projects.md` | Maintenance | Rollup of every Planned item |
+| `project-ideas.md` | Maintenance | Longer design notes for projects not yet planned |
+| `maintenance.md` | Maintenance | Rollup of every recurring Maintenance item, with Last Done |
+| `captains-log.md` | Voyages | Voyage-by-voyage log, newest first |
+| `_template.md` | (draft) | Starting point for a new document; not published |
 
-## House rules
+Front matter is flat `key: value` (title, category, order, description).
+`Operations`, `Systems`, `Maintenance`, `Voyages` sort first in the sidebar;
+`order` sorts within a category, low first. A `_`-prefixed file is a draft.
 
-- **One subject per file, named for the subject**, lowercase-hyphenated:
-  `docs/systems/raw-water.md`, not `docs/notes-2.md`. The filename is the URL.
-- **Write for the person holding the phone** — in the dark, wet, one-handed,
-  no signal. Numbered steps, in order. Consequence first: "Close the seacock"
-  before the paragraph explaining why. A procedure should fit on one or two
-  phone screens; move background to a Systems doc and link to it.
-- **Checklists** (`- [ ] item`) render as tickable boxes, stored per device.
-  Use them for anything done in sequence under time pressure.
-- **Links and images are relative to the document's own folder**, exactly as
-  on GitHub: from `docs/operations/mob.md`, link `[Engine](../systems/engine.md)`
-  and embed `![Panel](images/panel.jpg)` for `docs/operations/images/panel.jpg`.
-  Anchors work: `[Bleeding](../systems/engine.md#bleeding-the-fuel-system)`.
-- **Tables** for specs, capacities, part numbers, valve positions. They scroll
-  sideways on a phone; keep them to 4–5 columns.
-- **Units**: US English. Metric by default, °F for temperature. Imperial where
-  the hardware standard is imperial (chain, shackles, fasteners, hose ID),
-  with metric in parentheses when it matters.
-- **Do not invent equipment.** If a model number, torque spec, capacity or
-  part number is not in what you were given, write `**Unverified:**` and what
-  is unknown. A confident wrong number in a procedure is worse than a gap.
-  Never fill a gap with the "typical" value for a First 42s7.
-- **This repository is public.** No credentials, Wi-Fi passwords, gate codes,
-  MMSI-linked personal details, home address, or slip number.
+### Conventions already in the docs
 
-## Vessel facts
+- **Status tags**, raw HTML inline, legend at the top of `systems.md`:
+  `<span class="doc-tag doc-tag--issue">Unresolved</span>`,
+  `<span class="doc-tag doc-tag--partial">Partial Fix</span>`,
+  `<span class="doc-tag doc-tag--planned">Planned</span>`,
+  `<span class="doc-tag doc-tag--maintenance">Maintenance</span>`.
+  Every Planned item must also appear in `planned-projects.md` and every
+  Maintenance item in `maintenance.md`. Add or remove both together.
+- **Unconfirmed values** are `—` or `[in brackets]`. Never replace one with
+  a guess or with the "typical" value for a First 42s7. A confident wrong
+  number in a procedure is worse than a gap.
+- **Current state vs. history**: `systems.md` describes the boat as it is
+  now. What changed, when and why goes in `changelog.md`. A repair usually
+  touches both.
+- **Cross-links** are plain relative links with anchors:
+  `[Engine & Drive](systems.md#2-engine-drive)`. Anchors are the heading
+  lowercased, punctuation dropped, spaces to hyphens. Renaming a heading
+  breaks every anchor to it: `grep -rn '#old-anchor' docs/` first.
+- **Images** go under `docs/images/`, linked relative to the document
+  (`images/panel.jpg`).
+- **Links outside `docs/`** must be absolute GitHub URLs; they are not
+  published. The checker enforces this.
 
-Only what is confirmed. Add to this list as facts are confirmed; mark
-anything else unverified in the document that uses it.
+### House rules
 
-- Name: Mermug
-- Hull: 1994 Beneteau First 42s7
-- Electronics: Signal K server on OpenPlotter (Raspberry Pi 5), NMEA 2000
-  backbone. ESP32/SensESP sensors live in
-  [`zackphillips/mermug-esp`](https://github.com/zackphillips/mermug-esp); the
-  public tracker is published by
-  [`zackphillips/signalk-github-pages`](https://github.com/zackphillips/signalk-github-pages).
+- **Write for the person holding the phone**: in the dark, wet,
+  one-handed, no signal. Procedures are numbered steps, consequence first
+  ("Close the seacock", then why). `- [ ]` items render as tickable boxes.
+- **Tables** for specs, capacities, part numbers, valve positions; keep new
+  ones to 4–5 columns so they read on a phone.
+- **Units**: US English. Imperial where the hardware or the existing doc
+  uses it (feet, gallons, chain, fasteners), metric in parentheses when it
+  matters. °F for temperature.
+- **Public repository.** Registration numbers, MMSI and home berth are
+  already published on purpose. Never add credentials, Wi-Fi or VPN
+  passwords, gate or lock codes, account numbers, or insurance policy
+  details.
 
-## The maintenance log
+## Logging work
 
-`docs/maintenance/log.md` is one file, newest entry first, each entry a
-level-2 heading. Insert new entries directly below the intro; never rewrite or
-reorder existing ones.
-
-```markdown
-## 2026-09-20: Replaced the raw-water impeller
-
-- System: Engine
-- Engine hours: 1204.5
-- Logged by: Zack
-
-Old impeller had two vanes torn. Spare used; one left aboard.
-```
+- **Repairs, installs, haul-outs** → `changelog.md`. Entries are
+  `### YYYY-MM-DD: What was done` with bullets beneath, in chronological
+  order; append new ones after the last dated entry in the `## 2025`
+  section (it holds everything since purchase). Then update Last Done in
+  `maintenance.md` and the affected `systems.md` section.
+- **Voyages, and maintenance done underway** → `captains-log.md`, newest
+  first under `## Log`, in the format given in that file's comment.
 
 ## Working here
 
@@ -135,3 +121,5 @@ Old impeller had two vanes torn. Spare used; one left aboard.
 - Keep commits and PRs small — they get reviewed on a phone.
 - The `/new-doc` and `/log-maintenance` skills in `.claude/skills/` carry the
   step-by-step for the two common jobs.
+- Facts about the boat come from the docs: the headers of `operations.md`
+  and `systems.md`, then the relevant `systems.md` section.
