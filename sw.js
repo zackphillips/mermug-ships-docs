@@ -27,6 +27,7 @@ const SHELL_ASSETS = [
   'assets/vendor/marked.min.js',
   'assets/vendor/purify.min.js',
   'assets/icon.svg',
+  'assets/icon-180.png',
 ].map((path) => new URL(path, SCOPE).href);
 
 self.addEventListener('install', (event) => {
