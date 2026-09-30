@@ -86,6 +86,7 @@ Notes: Rigging inspected from aloft and on deck; no rigging or tang damage sight
 - **Keel-hull seam**: repaired — reefed out the failed seam, cleaned out debris, applied flexible marine adhesive compound, torqued the keel bolts. A keel-hull gap on the Beneteau First 42 is [normal for the model](https://forums.sailboatowners.com/threads/beneteau-first-42-keel-hull-gap-normal.117295/); no active issue.
 - <span class="doc-tag doc-tag--partial">Partial Fix</span> **Stanchion bases**: tightened boat-wide; the deck leak near the aft head is resolved. Still open: a **missing transom lifeline**, and some **gelcoat cracks at the bow pulpit stanchions** remain (partially patched).
 - <span class="doc-tag doc-tag--issue">Unresolved</span> **Cockpit teak decking**: weathered, sealant failing.
+- <span class="doc-tag doc-tag--planned">Planned</span> **Rust spots**: persistent rust spots on the **port foredeck** and the **transom**, noted 2026-09-26 after the topsides were washed with soap and water; the wash did not remove them. Need detailing. Source of the rust not yet identified.
 - <span class="doc-tag doc-tag--issue">Unresolved</span> **Rudder shaft bearing**: ~1/8" play; monitor at haul-out, renew if play increases.
 - No moisture-meter testing has been done. No osmotic blisters have been found; percussion sounding revealed no delamination on the accessible wetted surfaces (one small blister was noted on the starboard quarter ~1 ft below the waterline).
 - These findings are from the May 2025 pre-purchase survey — no further hull inspection has been done since.
@@ -770,24 +771,17 @@ them up (e.g. off a label or the Actisense/Garmin/Airmar spec sheets).
 ### MOB (Man Overboard) Button
 - **Type**: momentary push button, mounted on the **cockpit coaming,
   starboard side**.
-- Wired into an **Actisense EMU-1** alarm/switch input (see [NMEA 2000
-  Network](#nmea-2000-network) above). The EMU-1 can only emit
-  engine-related PGNs, so the button is deliberately mapped to an engine
-  alarm channel that's irrelevant to Mermug's actual engine, to avoid any
-  ambiguity with a real engine alarm.
-- Surfaces raw in SignalK at
-  `notifications.propulsion.port.neutralStartProtect` — state `alarm`
-  while held, back to a non-alarm state on release.
-- A **Node-RED flow** and the **signalk-mob-course** plugin turn that raw
-  path into a standard MOB notification and an automatic course back to
-  the position — see [SignalK Configuration — MOB
-  Button](signalk.md#mob-button-notificationsmobbutton) for the full
+- Hard-wired to the Raspberry Pi through an **optocoupler on GPIO17**
+  (since 2026-09-26). It no longer goes through the Actisense EMU-1 (see
+  [NMEA 2000 Network](#nmea-2000-network)).
+- A **Node-RED process** raises a `notifications.mob.GPIO17` notification
+  on press. Holding the button for 5 seconds clears it (sets it to
+  `normal`).
+- The **signalk-mob-course** plugin turns the notification into an
+  automatic course back to the position — see [SignalK Configuration —
+  MOB Button](signalk.md#mob-button-notificationsmobgpio17) for the
   software chain, and [Man Overboard Procedure](mob-procedure.md) for what
   to do when it fires.
-
-> **⚠️ Watch Items**
-> - <span class="doc-tag doc-tag--issue">Unresolved</span> **Disconnected as of 2026-09-07.** The EMU-1 wiring above was judged not a robust long-term solution and has been physically disconnected — the button currently raises no notification at all. Its wire was run back to the nav station but left unconnected there.
-> - <span class="doc-tag doc-tag--planned">Planned</span> A 12 V-to-3.3 V optoisolator and a relay set are staged next to the Raspberry Pi, intended to interface the button directly with the Pi instead of the EMU-1 — not yet wired in.
 
 ### SignalK Server
 - Running on Raspberry Pi at `192.168.8.50:3000`, no SSL, token-based security.
@@ -822,7 +816,7 @@ them up (e.g. off a label or the Actisense/Garmin/Airmar spec sheets).
 | MOB gear — Lalizas inflatable MOB raft/system | 1 | Mounted on the **stbd railing**, next to the outboard mounting crane | — |
 | MOB gear — Dan buoy | 1 | Stbd lazarette | Serviced January 2026 |
 | MOB gear — Scotty #0793 rescue throw bags (50 ft floating MFP rope) | 2 | Stbd lazarette | — |
-| MOB gear — cockpit MOB button | 1 | Cockpit coaming, starboard side | **Not currently functional** — disconnected from the Actisense EMU-1 2026-09-07 pending a rework via an optoisolator/relay set direct to the Raspberry Pi. When wired in, it's an electronic position-marking aid — raises a SignalK alert and sets an autopilot course back to the position. **Not a retrieval device.** See [MOB Button](#mob-man-overboard-button) and the [Man Overboard Procedure](mob-procedure.md) |
+| MOB gear — cockpit MOB button | 1 | Cockpit coaming, starboard side | Functional since 2026-09-26 — wired to the Raspberry Pi via an optocoupler on GPIO17. An electronic position-marking aid: raises a SignalK alert and sets an autopilot course back to the position. **Not a retrieval device.** See [MOB Button](#mob-man-overboard-button) and the [Man Overboard Procedure](mob-procedure.md) |
 | Swim ladder | 1 | Stern lazarette, port side | Hooks onto the swim platform via two hooks |
 | Smoke/CO2 detectors | 2+ | Aft cabin; port side, main cabin near speaker | All units double as CO2 alarms |
 | Life raft | 0 | Not aboard | — |
@@ -841,7 +835,6 @@ corrected).
 > - <span class="doc-tag doc-tag--issue">Unresolved</span> EPIRB battery was replaced 2026 but has **not yet been tested**.
 > - <span class="doc-tag doc-tag--planned">Planned</span> **No life raft is aboard** — a raft that was reported was never sighted and is not actually carried. Get one before any offshore or coastal passage.
 > - <span class="doc-tag doc-tag--planned">Planned</span> Swim ladder hooks onto the swim platform via two hooks but is **not also lashed/tied off** — it has come loose in heavy seas before and required someone to dive after it. Figure out how to additionally tie it to the platform hooks so it can't fall out.
-> - <span class="doc-tag doc-tag--issue">Unresolved</span> **MOB button disconnected**: as of 2026-09-07 the button is physically disconnected from the EMU-1 (judged not robust enough) and raises no notification. A rework via an optoisolator and relay set direct to the Raspberry Pi is staged but not yet wired in — see [MOB Button](#mob-man-overboard-button).
 > - <span class="doc-tag doc-tag--issue">Unresolved</span> **MOB course is never auto-cancelled**: `signalk-mob-course` sets the destination but does not call `clearDestination()` when the MOB notification is cleared — the boat keeps navigating to the MOB position until the destination is cancelled separately.
 > - <span class="doc-tag doc-tag--issue">Unresolved</span> **No position embedded in the MOB notification**: it's published via `signalk-send-notification`, which only carries `state`/`method`/`message` — `signalk-mob-course` falls back to the vessel's position at the moment it processes the delta, not the moment of the button press (a boat length or two off at speed).
 > - <span class="doc-tag doc-tag--planned">Planned</span> The MOB flow transmits no PGN 127233 (Man Overboard) and no AIS SART — it's SignalK-side only, so the Garmin chartplotter most likely shows nothing from it.
@@ -852,7 +845,7 @@ A momentary push button in the cockpit (coaming, starboard side) raises a
 SignalK man-overboard notification and automatically sets the autopilot's
 course back to the vessel's position when pressed — see [Navigation &
 Electronics — MOB Button](#mob-man-overboard-button) for the hardware
-chain and [SignalK Configuration](signalk.md#mob-button-notificationsmobbutton)
+chain and [SignalK Configuration](signalk.md#mob-button-notificationsmobgpio17)
 for the Node-RED flow and plugin. It marks a position and points the boat
 back at it; it is **not** a substitute for AIS MOB beacons, DSC distress,
 or physically getting the person out of the water. Full response steps,
@@ -1057,17 +1050,10 @@ step-by-step how-to.
 ### Galley
 - Located to starboard, aft in the saloon.
 - **Stove**: Tesco three-burner propane with oven.
-- **Refrigeration**: icebox only as of 2026-09-07 — the old Adler Barbour
-  12 V refrigerator/freezer has been **fully removed** (quick-connect
-  refrigerant hoses disconnected and pulled through into the icebox,
-  cooling element/evaporator removed from the box). The **Isotherm 2017
-  Compact Classic** replacement (p/n U260X086P12111AA, purchased
-  2026-07-18) has not yet been installed.
+- **Refrigeration**: **Isotherm 2017 Compact Classic** air-cooled system
+  (p/n U260X086P12111AA), installed and functional as of 2026-09-26. It
+  replaced the original Adler Barbour 12 V unit, removed 2026-09-07.
 - **Sink**: stainless steel, separate basins. Pressure water from the ParMax pump; a Whale foot pump for salt water is fully operational — use it for washing dishes.
-
-> **⚠️ Watch Items**
-> - <span class="doc-tag doc-tag--issue">Unresolved</span> No refrigeration equipment is currently installed — the old unit was removed 2026-09-07 and the replacement is not yet in. Icebox has no active cooling in the meantime.
-> - <span class="doc-tag doc-tag--planned">Planned</span> Install the **Isotherm 2017 Compact Classic** air-cooled system (p/n U260X086P12111AA — evaporator dimensions fit the existing fridge box), in storage since 2026-07-18.
 
 ### Dehumidifier
 **Waykar 1500 sq ft, 30-pint, Energy Star dehumidifier** (0.62 gal tank,

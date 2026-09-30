@@ -26,13 +26,13 @@ Do these **before** touching anything electronic:
 4. **Press the MOB button** — momentary push button, **cockpit coaming,
    starboard side**. One press. Don't hold it.
 5. **Confirms it worked**: the alarm sounds (see below) and
-   `notifications.mob.button` shows `emergency` on KIP / Freeboard-SK. If
+   `notifications.mob.GPIO17` shows `emergency` on KIP / Freeboard-SK. If
    you don't hear or see that within a couple of seconds, the button may
    not have registered — press it again.
 
 ## 3. What Happens Automatically
 
-- SignalK raises `notifications.mob.button` at state `emergency`.
+- SignalK raises `notifications.mob.GPIO17` at state `emergency`.
 - **signalk-notification-player** sounds the alarm.
 - **signalk-mob-course** sets the autopilot/plotter destination back
   toward the MOB position (falling back to the boat's current position if
@@ -43,7 +43,7 @@ Do these **before** touching anything electronic:
 
 Full technical chain: [Systems §6 — MOB
 Button](systems.md#mob-man-overboard-button) and [SignalK Configuration —
-MOB Button](signalk.md#mob-button-notificationsmobbutton).
+MOB Button](signalk.md#mob-button-notificationsmobgpio17).
 
 ## 4. Recovery Manoeuvre
 
@@ -88,7 +88,7 @@ and sets a course aboard Mermug. If recovery isn't immediate:
 
 Only once the person is safely aboard:
 
-13. **Hold the MOB button 5 seconds** to clear `notifications.mob.button`
+13. **Hold the MOB button 5 seconds** to clear `notifications.mob.GPIO17`
     back to `normal`.
 14. **Separately cancel the course destination** — clearing the
     notification does **not** do this; `signalk-mob-course` never calls
@@ -106,18 +106,12 @@ memory real. Don't save it for "real" emergencies only.
 ## Background & Limitations
 
 - **Hardware**: momentary push button (cockpit coaming, starboard side) →
-  Actisense EMU-1 alarm/switch input → NMEA 2000 →
-  `notifications.propulsion.port.neutralStartProtect` in SignalK. The
-  EMU-1 can only emit engine-related PGNs, so the button is deliberately
-  mapped to an engine alarm channel irrelevant to Mermug's actual engine.
-- **Software**: a Node-RED flow turns that raw path into
-  `notifications.mob.button`; the `signalk-mob-course` plugin sets the
-  course. Full chain: [Systems §6](systems.md#mob-man-overboard-button),
-  [SignalK Configuration](signalk.md#mob-button-notificationsmobbutton).
-- <span class="doc-tag doc-tag--issue">Unresolved</span> **Untested on
-  hardware as of 2026-09-04** — built and bench-tested with simulated
-  notifications only. Treat it as an aid, not a proven system, until it's
-  been exercised with the real button and EMU-1.
+  optocoupler → **GPIO17** on the Raspberry Pi (since 2026-09-26; it
+  previously went through the Actisense EMU-1).
+- **Software**: a Node-RED process raises `notifications.mob.GPIO17`; the
+  `signalk-mob-course` plugin sets the course. Full chain:
+  [Systems §6](systems.md#mob-man-overboard-button),
+  [SignalK Configuration](signalk.md#mob-button-notificationsmobgpio17).
 - <span class="doc-tag doc-tag--issue">Unresolved</span> **No position is
   embedded in the notification** — the course is set from the boat's
   position at the moment SignalK processes the delta, not the moment of

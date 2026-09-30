@@ -192,51 +192,35 @@ anchored.
 | [signalk-mob-notifier](https://github.com/meri-imperiumi/signalk-mob-notifier) | Man-overboard BLE-tag notifier — currently **disabled**. Separate system from the MOB button below; it would page a missing BLE tag, not a button press — don't conflate the two |
 | signalk-mob-course | Enabled — subscribes to `notifications.mob.*`; on any notification at state `emergency`, calls the Course API's `setDestination()` with the MOB position, falling back to the vessel's current `navigation.position` if the notification doesn't carry one. Drives the autopilot/plotter destination back toward the person in the water. See MOB Button below |
 
-### MOB Button (`notifications.mob.button`)
+### MOB Button (`notifications.mob.GPIO17`)
 
 The physical MOB push button (see [Systems §6](systems.md#6-navigation-electronics)
-and [§7](systems.md#7-safety-equipment)) surfaces raw in SignalK at
-`notifications.propulsion.port.neutralStartProtect` via the Actisense
-EMU-1. A **Node-RED flow** (`signalk-node-red`, flow tab "MOB Button", all
-wired core nodes — no function nodes) turns that raw engine-alarm path
-into a proper MOB alert at `notifications.mob.button`:
-
-```
-MOB button (subscribe) → parse state → edge only (rbe) → pressed?
-    → debounce 100ms → MOB already active?
-        ├─ no  → mobActive = true  → MOB = emergency
-        └─ yes → hold 5s → mobActive = false → MOB = normal
-    └─ (release) → cancel hold
-```
+and [§7](systems.md#7-safety-equipment)) is hard-wired to the Raspberry Pi
+through an optocoupler on **GPIO17** (since 2026-09-26; it previously came
+in through the Actisense EMU-1). A **Node-RED process** (`signalk-node-red`)
+raises the MOB alert at `notifications.mob.GPIO17`:
 
 | Gesture | Result |
 |---|---|
-| Press (instant, 100 ms debounce) | Raises `notifications.mob.button` at state `emergency`, method visual + sound, message "Person Overboard!" |
-| Hold 5 s while a MOB is active | Sets `notifications.mob.button` back to `normal` |
-| Hold 5 s from idle | Raises only — never raises then clears |
-| Release before 5 s | Cancels the pending clear |
+| Press | Raises `notifications.mob.GPIO17` |
+| Hold 5 s | Clears it (sets it to `normal`) |
 
 Design notes:
 - The **press is instant, not held**, matching commercial MOB buttons — an
   accidental press is cheap and reversible; a delayed emergency is not.
-- The raise is gated on `flow.mobActive` so a long hold from idle can't
-  set-then-clear.
-- The `edge only` (`rbe`) node blocks repeated identical states, so an
-  EMU-1 transmitting continuously while the button is held collapses to
-  one press event and one release event.
-- The path is `notifications.mob.button` rather than bare `notifications.mob`.
-  The Signal K spec lists the standard alarm keys as `notifications.mob.*`,
-  and the server's Notifications API otherwise publishes MOB alarms as
-  `notifications.mob.{uuid}` — a stable `button` id keeps one MOB slot for
-  this button and stays compatible with tooling that subscribes to the
-  wildcard.
+- The path is under `notifications.mob.*`, the Signal K standard alarm key
+  for MOB, so `signalk-mob-course` and any tooling that subscribes to the
+  wildcard picks it up.
+- Not re-documented since the rework: notification state and method, the
+  message text, debounce time and flow node layout. [Read them off the
+  Node-RED flow before relying on this page for them.]
 
 **Consumed by**: `signalk-notification-player` (alarm sound) and
 `signalk-mob-course` (sets the course destination — see table above).
 Appears as a standard notification in Freeboard-SK and KIP.
 
 **Known limitations** — see the [Man Overboard Procedure](mob-procedure.md)
-for what to do about each of these:
+for what to do about each of these. [These were written for the EMU-1 version of the flow; not rechecked since the GPIO17 rework.]
 - No position is embedded in the notification — `signalk-send-notification`
   only emits `state`/`method`/`message`, so `signalk-mob-course` falls back
   to the boat's position at the moment it processes the delta, not the
@@ -249,13 +233,6 @@ for what to do about each of these:
   `canClear` won't offer a Clear button.
 - Emergency notifications cannot be silenced, per the Notifications API —
   there is no silence path for this alarm by design.
-- Hold-to-clear depends on a release delta. If the EMU-1 stops
-  transmitting rather than emitting a non-alarm state on release, the
-  clear timer won't cancel correctly.
-- <span class="doc-tag doc-tag--issue">Unresolved</span> Built and
-  bench-tested with simulated notifications only as of 2026-09-04 — not
-  yet tested against the physical button and the EMU-1's real delta
-  cadence.
 
 ---
 

@@ -525,7 +525,7 @@ Format: `YYYY-MM-DD: Description`
   one press/release event, and publishes a proper MOB alert at
   `notifications.mob.button` — instant raise on press (state `emergency`),
   hold 5 s to clear back to `normal`. See
-  [SignalK Configuration — MOB Button](signalk.md#mob-button-notificationsmobbutton)
+  [SignalK Configuration — MOB Button](signalk.md#mob-button-notificationsmobgpio17)
   for the full node chain and design notes.
 - Added the **signalk-mob-course** plugin, which subscribes to
   `notifications.mob.*` and calls the Course API's `setDestination()` with
@@ -603,6 +603,21 @@ Format: `YYYY-MM-DD: Description`
 - **Engine panel cigarette lighter replaced.** The 12 V cigarette-lighter
   accessory socket in the engine control panel was replaced and is now
   fully functional.
+
+### 2026-09-26: Isotherm 2017 refrigerator installed; MOB button rewired to the Pi; topsides washed
+- **Refrigerator installed.** The Isotherm 2017 Compact Classic (p/n
+  U260X086P12111AA, purchased 2026-07-18) replaces the Adler Barbour unit
+  removed 2026-09-07. Functional. See [Galley](systems.md#galley).
+- **MOB button rewired directly to the Raspberry Pi.** The button now goes
+  through an optocoupler to **GPIO17**, replacing the Actisense EMU-1 path
+  (disconnected 2026-09-07). A Node-RED process raises a
+  `notifications.mob.GPIO17` notification on press; holding the button for
+  5 seconds clears it (sets it to `normal`). See
+  [SignalK Configuration — MOB Button](signalk.md#mob-button-notificationsmobgpio17)
+  and [MOB Button](systems.md#mob-man-overboard-button).
+- **Topsides washed** with soap and water. Persistent **rust spots** noted
+  on the **port foredeck** and the **transom**; they need detailing. See
+  [Known Hull Findings](systems.md#known-hull-findings).
 
 <!-- Add entries above this line, newest first -->
 
@@ -710,7 +725,7 @@ Part numbers still need to be filled in as parts are ordered.
 | Water heater | Raritan | — | 6 gal, 120 V + engine heat exchanger |
 | Heads | Jabsco manual ×2 | — | Type III MSD |
 | Bilge pump | Jabsco 12 V diaphragm | — | Manual backup: Whale Gulper |
-| Refrigeration | — (removed) | — | Old Adler Barbour 12 V unit **fully removed 2026-09-07** (quick-connect refrigerant hoses disconnected and pulled through into the icebox; cooling element/evaporator removed from the box) — icebox currently has no cooling equipment. Replacement: Isotherm 2017 Compact Classic (p/n U260X086P12111AA, Defender.com, purchased 2026-07-18) — ready to install, not yet installed |
+| Refrigeration | Isotherm 2017 Compact Classic (air-cooled) | U260X086P12111AA | Installed and functional 2026-09-26 (Defender.com, purchased 2026-07-18). Replaced the Adler Barbour 12 V unit, removed 2026-09-07 |
 | Stove | Tesco 3-burner propane w/ oven | — | |
 | Steering | Edson rack and pinion | — | |
 | DC Aux panel | Blue Sea Systems 8025, 4-position | — | Installed May 2026, replacing old battery-monitor panel; adds "Lights"/"Electronics" breakers |

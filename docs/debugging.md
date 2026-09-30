@@ -144,9 +144,10 @@ be used for motoring compliance.
 3. **Check the compressor** — the original Adler Barbour compressor
    (1994) was diagnosed as failed (July 2026).
 
-**Replacement plan**: Isotherm 2017 Compact Classic air-cooled system
-(~$1,100, Defender.com). The evaporator element dimensions fit the existing
-fridge box.
+**Replacement**: Isotherm 2017 Compact Classic air-cooled system
+(~$1,100, Defender.com), installed and functional 2026-09-26. The
+evaporator element dimensions fit the existing fridge box. The diagnosis
+below is for the old Adler Barbour unit.
 
 **Important notes**:
 - The old refrigerant has been banned by the EPA.
@@ -233,7 +234,7 @@ Many "failures" aboard have turned out to be simple switch/connection issues:
 | Solar output low | Ground wire at the controller |
 | Wind reads wrong | Depth sensor position/orientation |
 | VHF won't transmit | Antenna connection (known issue) |
-| Fridge not cooling | Compressor is dead (known); do not troubleshoot further until Isotherm replacement is installed |
+| Fridge not cooling | Isotherm 2017 installed 2026-09-26 (functional); no fault history yet. The dead-compressor diagnosis above applies to the old Adler Barbour unit only |
 | Lights not working | Check wiring quality — previous owner's work was poor |
 | Hot water in bilge | Pressure relief valve on the water tank |
 | mermug.com stale | Git repo state on the Pi |

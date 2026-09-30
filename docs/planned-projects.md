@@ -31,13 +31,14 @@ stage, see [Project Ideas](project-ideas.md).
 - [ ] Fit a proper mount to secure the LPG tanks in their locker — see [Propane (LPG)](systems.md#propane-lpg)
 - [ ] Test the emergency tiller on deck — it's aboard but has never been rigged and tested — see [Safety Equipment](systems.md#7-safety-equipment)
 - [ ] Additionally lash/tie the swim ladder to its platform hooks — see [Safety Equipment](systems.md#7-safety-equipment)
-- [ ] Test the MOB button flow against the physical button and the EMU-1's real alarm/release delta cadence — built and bench-tested with simulated notifications only so far — see [MOB Button](systems.md#mob-man-overboard-button)
+- [ ] Confirm the full MOB chain end to end from the GPIO17 button: alarm sound, `signalk-mob-course` destination, and 5 s hold-to-clear — see [MOB Button](systems.md#mob-man-overboard-button)
 - [ ] Make the MOB course auto-cancel when the notification is cleared — `signalk-mob-course` currently only sets the destination, never clears it — see [MOB Button](systems.md#mob-man-overboard-button)
 - [ ] Embed the MOB position in the notification itself so `signalk-mob-course` doesn't have to fall back to the vessel's position at delta-processing time — see [MOB Button](systems.md#mob-man-overboard-button)
 - [ ] Add PGN 127233 (Man Overboard) broadcast / AIS SART triggering to the MOB flow so a chartplotter or nearby AIS-equipped vessel could see it — currently SignalK-side only — see [MOB Button](systems.md#mob-man-overboard-button)
 
 ## Hull & Rig
 
+- [ ] Detail the persistent rust spots on the port foredeck and the transom — noticed 2026-09-26 while washing the topsides — see [Known Hull Findings](systems.md#known-hull-findings)
 - [ ] Full haul-out rig inspection by a qualified rigger, including chain plates — see [Last Rig Inspection](systems.md#last-rig-inspection)
 
 ## Electrical
@@ -73,7 +74,6 @@ stage, see [Project Ideas](project-ideas.md).
 
 ## Galley & Accommodation
 
-- [ ] Install the refrigeration replacement — Isotherm 2017 Compact Classic air-cooled system is in storage, ready to install — see [Galley](systems.md#galley)
 
 ## Vessel Data / Automation
 
