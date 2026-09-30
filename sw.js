@@ -25,6 +25,7 @@ const SHELL_ASSETS = [
   'assets/constants.js',
   'assets/docs.js',
   'assets/icon.svg',
+  'assets/icon-180.png',
 ].map((path) => new URL(path, SCOPE).href);
 
 self.addEventListener('install', (event) => {
