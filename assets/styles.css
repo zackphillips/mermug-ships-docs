@@ -82,6 +82,28 @@
   --radius-sm:     7px;
 }
 
+/* ── Night — red only, for the helm and the nav station after dark.
+   Nothing here has a green or blue channel above the floor, so it does not
+   cost night vision. Tags differ by border style instead of hue. ── */
+[data-theme="night"] {
+  --accent:        #ff2020;
+  --accent-light:  rgba(255, 32, 32, 0.14);
+  --bg-primary:    #080000;
+  --bg-secondary:  #100000;
+  --bg-tertiary:   #100000;
+  --bg-quaternary: #1c0303;
+  --text-primary:  #ff2020;
+  --text-secondary:#e02020;
+  --text-muted:    #b01818;
+  --border-color:  rgba(255, 32, 32, 0.25);
+  --shadow-sm:     none;
+  --shadow-md:     none;
+  --shadow-color:  transparent;
+  --chart-grid:    rgba(255, 32, 32, 0.25);
+  --chart-text:    #ff2020;
+  color-scheme:    dark;
+}
+
 /* ─────────────────────────────────────────────────────────────────────────
    Base
    ───────────────────────────────────────────────────────────────────────── */
@@ -171,6 +193,11 @@ body {
   font-weight: 400;
   letter-spacing: 0.01em;
 }
+
+[data-theme="night"] #status-hero { background: var(--bg-quaternary); border-bottom-color: var(--border-color); color: var(--text-primary); }
+[data-theme="night"] #status-vessel,
+[data-theme="night"] #status-sentence { color: var(--text-primary); }
+[data-theme="night"] #status-age { color: var(--text-secondary); }
 
 /* ─────────────────────────────────────────────────────────────────────────
 /* ─────────────────────────────────────────────────────────────────────────
@@ -561,6 +588,12 @@ body {
 [data-theme="marine"] .doc-tag--maintenance,
 [data-theme="amber"] .doc-tag--maintenance { color: #7dd0a0; border-color: rgba(125, 208, 160, 0.4); background: rgba(125, 208, 160, 0.12); }
 
+[data-theme="night"] .doc-tag { color: #ff2020; background: transparent; border-color: #ff2020; }
+[data-theme="night"] .doc-tag--issue       { border-style: solid; }
+[data-theme="night"] .doc-tag--partial     { border-style: dashed; }
+[data-theme="night"] .doc-tag--planned     { border-style: dotted; border-width: 2px; }
+[data-theme="night"] .doc-tag--maintenance { border-style: double; border-width: 3px; }
+
 .markdown-body hr {
   height: 1px;
   margin: 2em 0;
@@ -641,6 +674,19 @@ body {
   vertical-align: -2px;
   accent-color: var(--accent);
   cursor: pointer;
+}
+
+/* Native checkboxes draw a white box; the red theme draws its own. */
+[data-theme="night"] .markdown-body input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  border: 2px solid var(--accent);
+  border-radius: 3px;
+  background: transparent;
+}
+[data-theme="night"] .markdown-body input[type="checkbox"]:checked {
+  background: var(--accent);
+  box-shadow: inset 0 0 0 2px var(--bg-primary);
 }
 
 .markdown-body li.is-checked {
