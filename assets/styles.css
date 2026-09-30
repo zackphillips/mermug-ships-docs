@@ -150,6 +150,10 @@ body {
   align-items: center;
   gap: 14px;
   flex-shrink: 0;
+  /* The tracker's hero holds a 96px logo here (76px on phones). There is no
+     logo in this reader, but the slot keeps the bar the same height so
+     moving between the two sites does not shift the page. */
+  min-height: 96px;
 }
 
 .status-hero__logo {
@@ -764,6 +768,7 @@ body {
     gap: 10px;
     padding: 16px;
   }
+  .status-hero__left { min-height: 76px; }
   #status-sentence { white-space: normal; }
   .floating-dark-mode-btn { padding: 10px 5px; min-height: 90px; }
 }
