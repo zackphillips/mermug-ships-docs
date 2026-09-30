@@ -718,7 +718,14 @@ body {
 /* ─────────────────────────────────────────────────────────────────────────
    Ship's Docs — print (a checklist is more useful on paper at the helm)
    ───────────────────────────────────────────────────────────────────────── */
+@page { margin: 0.5in; }
+
 @media print {
+  /* Ink, not backgrounds: code chips and status tags read as outlines. */
+  .markdown-body code,
+  .markdown-body pre { background: none !important; color: #000 !important; border: 1px solid #999; }
+  .markdown-body pre code { border: none; }
+  .doc-tag { color: #000 !important; background: none !important; border-color: #000 !important; }
   .docs-sidebar,
   .floating-dark-mode-btn,
   .docs-doc-meta,
