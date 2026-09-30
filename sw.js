@@ -1,9 +1,9 @@
 // Service worker — keeps the ship's docs readable offshore with no signal.
 //
-//   Shell (HTML, CSS, JS)  → stale-while-revalidate, in a cache named for the
-//                            deploy, so a new release actually arrives
+//   Shell (HTML, CSS, JS,   → stale-while-revalidate, in a cache named for the
+//   vendored marked and       deploy, so a new release actually arrives
+//   DOMPurify)
 //   docs/ (Markdown, index) → network-first, cached fallback
-//   CDN (marked, DOMPurify) → stale-while-revalidate
 //
 // Paths resolve against the worker's scope, so the site works at a project
 // Pages URL (/mermug-ships-docs/) or at a custom domain root alike.
@@ -24,7 +24,10 @@ const SHELL_ASSETS = [
   'assets/styles.css',
   'assets/constants.js',
   'assets/docs.js',
+  'assets/vendor/marked.min.js',
+  'assets/vendor/purify.min.js',
   'assets/icon.svg',
+  'assets/icon-180.png',
 ].map((path) => new URL(path, SCOPE).href);
 
 self.addEventListener('install', (event) => {
@@ -54,11 +57,6 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
-
-  if (url.hostname.endsWith('jsdelivr.net')) {
-    event.respondWith(staleWhileRevalidate(request, SHELL_CACHE));
-    return;
-  }
 
   if (url.origin !== self.location.origin) return;
 

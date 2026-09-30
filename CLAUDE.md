@@ -14,7 +14,7 @@ Read this file before changing anything.
 |---|---|---|
 | `docs/**.md` | The documents | **Yes** — this is the job |
 | `docs/images/*` | Photos and diagrams referenced by a document | Yes |
-| `index.html`, `sw.js`, `manifest.json`, `assets/` | The reader (ported from `signalk-github-pages`) | Only when asked to change the site |
+| `index.html`, `sw.js`, `manifest.json`, `assets/` | The reader (ported from `signalk-github-pages`). `assets/vendor/` holds pinned copies of `marked` 12.0.2 and DOMPurify 3.1.6 so the reader loads with no network | Only when asked to change the site |
 | `scripts/build-index.mjs` | Builds `docs/index.json`; `--check` validates | Only when asked |
 | `.github/workflows/pages.yml` | Checks PRs, deploys `main` to Pages | Only when asked |
 | `docs/index.json` | Generated, gitignored | **Never commit it** |
@@ -25,8 +25,11 @@ There is no build step to run before committing. On every push to `main` the
 Pages workflow runs `scripts/build-index.mjs`, which writes `docs/index.json`,
 and deploys. The reader fetches that index, then each `.md` file, and renders
 it client-side with `marked`. A pull request runs the same script with
-`--check`, which fails on a broken relative link, a missing image, or a
-document with no title.
+`--check`, which fails on a broken relative link, a missing image, a link
+`#anchor` that matches no h2/h3 heading, a document with no title, a Planned
+or Maintenance tag in `systems.md` whose section `planned-projects.md` /
+`maintenance.md` does not link to, and a line that looks like a credential
+(append `<!-- secrets-ok -->` to a line that is not one).
 
 Before committing, run:
 
