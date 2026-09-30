@@ -678,6 +678,14 @@ body {
   cursor: pointer;
 }
 
+/* ── Search hits ── */
+.markdown-body mark.search-hit {
+  background: var(--accent);
+  color: var(--bg-primary);
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
 /* Native checkboxes draw a white box; the red theme draws its own. */
 [data-theme="night"] .markdown-body input[type="checkbox"] {
   appearance: none;

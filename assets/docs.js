@@ -33,6 +33,7 @@ let activeToc = [];        // [{ id, text, level }] for the document on screen
 let expandedToc = new Set(); // ids of h2 TOC entries currently expanded
 let searchTerm = '';
 const markdownCache = new Map();
+const searchText = new Map(); // slug → lowercased prose, so search reaches body text
 
 // ── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -107,6 +108,8 @@ async function loadMarkdown(entry) {
   if (!response.ok) throw new Error(`${entry.path} → HTTP ${response.status}`);
   const text = (await response.text()).replace(FRONT_MATTER_RE, '');
   markdownCache.set(entry.slug, text);
+  // Tags and link targets would make "span" or "systems.md" match everything.
+  searchText.set(entry.slug, text.replace(/<[^>]*>/g, ' ').replace(/\]\([^)]*\)/g, ']').toLowerCase());
   return text;
 }
 
@@ -114,10 +117,10 @@ async function loadMarkdown(entry) {
 // screen. They are small text files, and a crew member offshore with no signal
 // is exactly who needs the safety procedures.
 function prefetchAllDocs() {
-  for (const entry of docsIndex) {
-    if (markdownCache.has(entry.slug)) continue;
-    loadMarkdown(entry).catch(() => {});
-  }
+  const loads = docsIndex.filter((entry) => !markdownCache.has(entry.slug))
+    .map((entry) => loadMarkdown(entry).catch(() => {}));
+  // Body search only sees documents that have loaded; refresh once they all have.
+  Promise.all(loads).then(() => { if (searchTerm) renderNav(); });
 }
 
 // ── Sidebar ─────────────────────────────────────────────────────────────────
@@ -129,6 +132,7 @@ function matchesSearch(entry) {
     entry.category,
     entry.description,
     ...(entry.headings || []).map((h) => h.text),
+    searchText.get(entry.slug) || '',
   ].join(' ').toLowerCase();
   return searchTerm.split(/\s+/).every((word) => haystack.includes(word));
 }
@@ -453,10 +457,66 @@ async function showDoc(slug, { scrollToHash = true } = {}) {
 
   renderNav();
 
+  markHits();
   if (scrollToHash && location.hash) {
     document.getElementById(decodeURIComponent(location.hash.slice(1)))
       ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else {
+    goToHit(1);
   }
+}
+
+// ── Search hits ─────────────────────────────────────────────────────────────
+//
+// Body search says which documents mention the words; marking them in the open
+// article says where. Marks wrap text nodes only, so textContent (and with it
+// the checklist keys) is unchanged.
+
+const MAX_HITS = 500;
+let hitIndex = -1;
+
+function clearHits() {
+  for (const mark of el.article.querySelectorAll('mark.search-hit')) mark.replaceWith(...mark.childNodes);
+  el.article.normalize();
+  hitIndex = -1;
+}
+
+function markHits() {
+  clearHits();
+  const words = [...new Set(searchTerm.split(/\s+/).filter((w) => w.length > 1))];
+  if (!words.length) return;
+  const pattern = new RegExp(words.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'gi');
+  const walker = document.createTreeWalker(el.article, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (node.parentElement.closest('script, style, mark')) continue;
+    if (node.nodeValue.search(pattern) >= 0) nodes.push(node);
+  }
+  let count = 0;
+  for (const node of nodes) {
+    if (count >= MAX_HITS) break;
+    const fragment = document.createDocumentFragment();
+    let last = 0;
+    for (const match of node.nodeValue.matchAll(pattern)) {
+      if (count++ >= MAX_HITS) break;
+      fragment.append(node.nodeValue.slice(last, match.index));
+      const mark = document.createElement('mark');
+      mark.className = 'search-hit';
+      mark.textContent = match[0];
+      fragment.append(mark);
+      last = match.index + match[0].length;
+    }
+    fragment.append(node.nodeValue.slice(last));
+    node.replaceWith(fragment);
+  }
+}
+
+// Scroll to the next hit, wrapping around; called on open and on Enter in search.
+function goToHit(step = 1) {
+  const marks = el.article.querySelectorAll('mark.search-hit');
+  if (!marks.length) return;
+  hitIndex = (hitIndex + step + marks.length) % marks.length;
+  marks[hitIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 // What the page says before there are any documents. It disappears the moment
@@ -580,6 +640,14 @@ function initEvents() {
   el.search.addEventListener('input', () => {
     searchTerm = el.search.value.trim().toLowerCase();
     renderNav();
+    if (activeSlug) markHits();
+  });
+
+  el.search.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      goToHit(event.shiftKey ? -1 : 1);
+    }
   });
 
   window.addEventListener('popstate', () => route({ replace: true }));
