@@ -529,8 +529,13 @@ function initTheme() {
   const apply = (theme) => {
     html.setAttribute('data-theme', theme);
     el.themeBtn.textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
-    el.themeBtn.style.background = isDarkTheme(theme) ? '#555e6e' : '#2c3e50';
-    el.themeBtn.style.color = '#fff';
+    // The button must not be the brightest thing on screen in the red theme.
+    const night = theme === 'night';
+    el.themeBtn.style.background = night ? '#1c0303' : isDarkTheme(theme) ? '#555e6e' : '#2c3e50';
+    el.themeBtn.style.color = night ? '#ff2020' : '#fff';
+    // Browser chrome follows the hero bar, which the red theme recolors.
+    document.querySelector('meta[name="theme-color"]')
+      ?.setAttribute('content', getComputedStyle(document.getElementById('status-hero')).backgroundColor);
   };
 
   let theme = html.getAttribute('data-theme') || 'marine';

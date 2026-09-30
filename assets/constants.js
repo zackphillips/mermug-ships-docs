@@ -2,9 +2,10 @@
 // window.VESSEL_CONSTANTS.
 
 var VESSEL_CONSTANTS = Object.freeze({
-  // Cycle order for the floating theme button. The first two are dark.
-  THEMES:      ['marine', 'amber', 'bright'],
-  DARK_THEMES: ['marine', 'amber'],
+  // Cycle order for the floating theme button. 'night' is red-only, for
+  // keeping night vision at the helm.
+  THEMES:      ['marine', 'amber', 'bright', 'night'],
+  DARK_THEMES: ['marine', 'amber', 'night'],
 
   // Built from docs/**.md by scripts/build-index.mjs. Never committed: the
   // Pages workflow generates it on every deploy.
