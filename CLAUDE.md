@@ -14,7 +14,7 @@ Read this file before changing anything.
 |---|---|---|
 | `docs/**.md` | The documents | **Yes** — this is the job |
 | `docs/images/*` | Photos and diagrams referenced by a document | Yes |
-| `index.html`, `sw.js`, `manifest.json`, `assets/` | The reader (ported from `signalk-github-pages`) | Only when asked to change the site |
+| `index.html`, `sw.js`, `manifest.json`, `assets/` | The reader (ported from `signalk-github-pages`). `assets/vendor/` holds pinned copies of `marked` 12.0.2 and DOMPurify 3.1.6 so the reader loads with no network | Only when asked to change the site |
 | `scripts/build-index.mjs` | Builds `docs/index.json`; `--check` validates | Only when asked |
 | `.github/workflows/pages.yml` | Checks PRs, deploys `main` to Pages | Only when asked |
 | `docs/index.json` | Generated, gitignored | **Never commit it** |
