@@ -643,6 +643,14 @@ body {
   cursor: pointer;
 }
 
+/* ── Search hits ── */
+.markdown-body mark.search-hit {
+  background: var(--accent);
+  color: var(--bg-primary);
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
 .markdown-body li.is-checked {
   color: var(--text-muted);
   text-decoration: line-through;
