@@ -1,0 +1,41 @@
+#!/bin/sh
+# Manage the Let's Encrypt certificate for the SignalK HTTPS proxy (nginx).
+#   signalk-cert register  - create the acme-dns account (once) and print the DNS records to add
+#   signalk-cert issue     - obtain the first certificate and enable the nginx site
+#   signalk-cert renew     - renew if expiring within 30 days (run by signalk-cert.timer)
+set -eu
+DOMAIN=signalk.mermug.com
+LAN_IP=192.168.8.50
+EMAIL=zack@zackphillips.com
+STATE=/etc/lego
+ACCOUNT=$STATE/acme-dns.json
+
+export EXEC_PATH=/usr/local/lib/signalk-cert/acmedns-hook.sh
+export EXEC_PROPAGATION_TIMEOUT=300
+lego_() { lego --accept-tos --email "$EMAIL" --path "$STATE" --dns exec \
+  --dns.resolvers 1.1.1.1:53 --dns.resolvers 8.8.8.8:53 --key-type ec256 -d "$DOMAIN" "$@"; }
+
+records() {
+  sub=$(python3 -c "import json;print(json.load(open('$ACCOUNT'))['fulldomain'])")
+  echo "Add these records in Squarespace (Domains > mermug.com > DNS > Custom records):"
+  echo "  CNAME  _acme-challenge.signalk  ->  $sub"
+  echo "  A      signalk                  ->  $LAN_IP"
+}
+
+case "${1:-}" in
+  register)
+    if [ ! -s "$ACCOUNT" ]; then
+      umask 077
+      curl -fsS -X POST https://auth.acme-dns.io/register -o "$ACCOUNT"
+    fi
+    records ;;
+  issue)
+    lego_ run
+    ln -sf /etc/nginx/sites-available/signalk /etc/nginx/sites-enabled/signalk
+    rm -f /etc/nginx/sites-enabled/default
+    nginx -t && systemctl reload nginx
+    systemctl enable --now signalk-cert.timer ;;
+  renew)
+    lego_ renew --days 30 --renew-hook "systemctl reload nginx" ;;
+  *) echo "usage: $0 register|issue|renew" >&2; exit 2 ;;
+esac
