@@ -25,13 +25,88 @@ full documentation here.
 | Setting | Value |
 |---|---|
 | Server | SignalK Node server, Raspberry Pi at `192.168.8.50:3000` |
-| SSL | Disabled |
+| Address | `https://signalk.mermug.com/`, aboard and remote; see [Remote Access](remote-access.md#signalkmermugcom-one-address-aboard-and-remote) |
+| SSL | Off in Signal K itself; HTTPS is terminated by nginx, see [HTTPS Proxy & Certificate](#https-proxy-certificate) |
 | Security | Token-based; `allow_readonly` on, device-access requests open, new-user registration open |
 | mDNS | Disabled |
 | Context pruning | Stale contexts (other vessels/AIS targets) pruned after 60 min |
 
 > The open device-access/registration settings are fine for a private vessel
 > LAN but worth tightening before any port-forwarding or public exposure.
+
+---
+
+## HTTPS Proxy & Certificate
+
+nginx on the Pi serves `signalk.mermug.com` over HTTPS and proxies to
+Signal K on port 3000. Signal K builds its discovery URLs from the hostname
+it's asked by, so it advertises `https://signalk.mermug.com/...` and
+`wss://...`, and apps that follow them stay on HTTPS.
+
+| Item | Value |
+|---|---|
+| nginx site | `/etc/nginx/sites-available/signalk`, symlinked into `sites-enabled`; default site removed |
+| Ports | 80 → 301 redirect to HTTPS; 443 → Signal K |
+| Certificate | Let's Encrypt, `CN=signalk.mermug.com`, ECDSA (`ec256`) |
+| Cert files | `/etc/lego/certificates/signalk.mermug.com.crt` / `.key` |
+| Issued by | [lego](https://go-acme.github.io/lego/) with a DNS challenge through [acme-dns](https://github.com/acme-dns/acme-dns) (`auth.acme-dns.io`) |
+
+A DNS challenge is needed because the name points at private addresses:
+Let's Encrypt can't reach the Pi over HTTP. The
+`_acme-challenge.signalk.mermug.com` CNAME delegates the challenge to an
+acme-dns account, so renewal needs no Squarespace API. The account
+credentials are in `/etc/lego/acme-dns.json` on the Pi (not in this repo).
+
+### Renewal
+
+| Piece | What it does |
+|---|---|
+| `signalk-cert.timer` | Runs the service about every 12 hours |
+| `signalk-cert.service` | Runs `/usr/local/sbin/signalk-cert renew` |
+| `signalk-cert renew` | `lego renew --days 30 --renew-hook "systemctl reload nginx"`: renews inside 30 days of expiry, then reloads nginx |
+
+Copies of the script and service:
+[`config/pi/`](https://github.com/zackphillips/mermug-ships-docs/tree/main/config/pi).
+Not yet copied into the repo: the timer unit, the nginx site file and
+`/usr/local/lib/signalk-cert/acmedns-hook.sh` [copy them in].
+
+The script's `records` output still says to set the public `A signalk`
+record to `192.168.8.50`. That predates the split setup: the public record
+is `10.0.1.1` and the `192.168.8.50` answer lives on the boat router (see
+[Remote Access](remote-access.md#signalkmermugcom-one-address-aboard-and-remote)).
+
+**Check it:**
+
+```sh
+systemctl status signalk-cert.service --no-pager | head -5   # status=0/SUCCESS
+curl -sv https://signalk.mermug.com -o /dev/null 2>&1 | grep 'expire date'
+```
+
+The certificate in service on 2026-11-27 expires **2027-02-02**, so the
+first automatic renewal falls around **2027-01-03**. After that, the expiry
+date should move about 60 days later. If it hasn't moved by mid-January,
+renewal is failing; the Pi needs internet access during the 30-day window.
+
+**Weak point:** `auth.acme-dns.io` is a free public service; it was down for
+days in April 2026 with a full disk. Twice-daily retries over the 30-day
+window ride out an outage that long. A longer one, or the service closing,
+needs a different challenge method (self-hosted acme-dns, or moving DNS to a
+provider with an API).
+
+**Force a renewal** to test the whole path (uses the script's settings; five
+duplicate certificates a week are allowed):
+
+```sh
+sudo EXEC_PATH=/usr/local/lib/signalk-cert/acmedns-hook.sh EXEC_PROPAGATION_TIMEOUT=300 \
+  lego --accept-tos --email zack@zackphillips.com --path /etc/lego --dns exec \
+  --dns.resolvers 1.1.1.1:53 --dns.resolvers 8.8.8.8:53 --key-type ec256 \
+  -d signalk.mermug.com renew --days 90 --renew-hook "systemctl reload nginx"
+```
+
+`journalctl -u signalk-cert.service` returned no entries on 2026-11-27 even
+though the unit had run that morning, so the journal isn't keeping these
+logs. To keep them: `sudo mkdir -p /var/log/journal && sudo systemctl
+restart systemd-journald`.
 
 ---
 

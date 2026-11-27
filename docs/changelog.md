@@ -619,6 +619,20 @@ Format: `YYYY-MM-DD: Description`
   on the **port foredeck** and the **transom**; they need detailing. See
   [Known Hull Findings](systems.md#known-hull-findings).
 
+### 2026-11-27: signalk.mermug.com works aboard and remote; tablet launcher header
+- Added a DNS override on the boat router (GL.iNet Slate):
+  `signalk.mermug.com → 192.168.8.50`. The public record stays
+  `10.0.1.1` (AstroWarp), so the same name reaches the Pi aboard, with no
+  internet, and over the VPN. Confirmed aboard on the Pi and remote from an
+  iPhone. See [Remote Access](remote-access.md#signalkmermugcom-one-address-aboard-and-remote).
+- Documented the existing nginx HTTPS proxy and lego certificate renewal on
+  the Pi; current certificate expires 2027-02-02. See
+  [HTTPS Proxy & Certificate](signalk.md#https-proxy-certificate).
+- Fully Kiosk launcher header (logo, time, sunrise/sunset, topo background)
+  in use on the larger tablet since 2026-11-04; added a compact version for
+  the Galaxy Tab Active3. Files and install steps in
+  [Tablet Launcher](tablet-launcher.md).
+
 <!-- Add entries above this line, newest first -->
 
 ---

@@ -218,8 +218,10 @@ repo is the most likely cause.
 - Check that the Pi is powered. The new solar charge controller (June 2026)
   provides sufficient power; a loose ground wire on the old controller was
   previously causing intermittent power issues.
-- Access the web interface at `http://192.168.8.50:3000` on the vessel
-  network.
+- Access the web interface at `https://signalk.mermug.com/` (aboard or
+  over AstroWarp), or `http://192.168.8.50:3000` on the vessel network.
+  If only the hostname fails, see
+  [Remote Access → If it goes wrong](remote-access.md#if-it-goes-wrong).
 - Manage services: `make status`, `make show-logs-website`
 
 ---

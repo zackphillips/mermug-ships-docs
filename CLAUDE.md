@@ -18,6 +18,7 @@ Read this file before changing anything.
 | `scripts/build-index.mjs` | Builds `docs/index.json`; `--check` validates | Only when asked |
 | `.github/workflows/pages.yml` | Checks PRs, deploys `main` to Pages | Only when asked |
 | `docs/index.json` | Generated, gitignored | **Never commit it** |
+| `config/` | Files copied onto devices aboard: `fully/` (launcher HTML pasted into Fully Kiosk), `pi/` (scripts and units on the Pi). Not published; link with absolute GitHub URLs | When the device copy changes |
 
 ## How a document becomes a page
 
@@ -52,7 +53,8 @@ new one; most subjects already have a home.
 | `mob-procedure.md` | Operations | Man overboard |
 | `debugging.md` | Operations | Fault-finding |
 | `signalk.md` | Systems | Signal K server, data sources, sensors, plugins, alarms |
-| `remote-access.md` | Systems | VPN into the boat |
+| `remote-access.md` | Systems | VPN into the boat; `signalk.mermug.com` split DNS |
+| `tablet-launcher.md` | Systems | Fully Kiosk launcher header on the tablets (files in `config/fully/`) |
 | `systems.md` | Systems | The source of truth for what is installed, numbered §1–13 |
 | `changelog.md` | Maintenance | Repairs, installs, upgrades, haul-outs: the full history |
 | `planned-projects.md` | Maintenance | Rollup of every Planned item |

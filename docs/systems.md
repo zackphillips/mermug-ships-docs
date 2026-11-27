@@ -784,7 +784,7 @@ them up (e.g. off a label or the Actisense/Garmin/Airmar spec sheets).
   to do when it fires.
 
 ### SignalK Server
-- Running on Raspberry Pi at `192.168.8.50:3000`, no SSL, token-based security.
+- Running on Raspberry Pi at `192.168.8.50:3000`, token-based security. Reached at `https://signalk.mermug.com/` aboard and remote, through an nginx HTTPS proxy on the Pi; see [Remote Access](remote-access.md#signalkmermugcom-one-address-aboard-and-remote).
 - Aggregates all NMEA 2000 / NMEA 0183 / Bluetooth instrument data onboard.
 - Feeds the KIP display (main instrument dashboard) and the mermug.com tracker.
 - See [SignalK Configuration](signalk.md) for the full breakdown of data sources, sensors and enabled plugins, and the [mermug.com tracker repo](https://github.com/zackphillips/zackphillips.github.io) for the telemetry pipeline.
@@ -1197,9 +1197,9 @@ and marine rail hardware:
 ## 13. Vessel Data / Automation
 
 ### SignalK
-- **Server**: Raspberry Pi at `192.168.8.50:3000`, no SSL, token-based security, mDNS disabled.
+- **Server**: Raspberry Pi at `192.168.8.50:3000`, token-based security, mDNS disabled. HTTPS via nginx at `https://signalk.mermug.com/`; see [HTTPS Proxy & Certificate](signalk.md#https-proxy-certificate).
 - Aggregates NMEA 2000 / NMEA 0183 / Bluetooth LE instruments.
-- Web interface at `http://192.168.8.50:3000` on local vessel network.
+- Web interface at `https://signalk.mermug.com/`, aboard or over AstroWarp (`http://192.168.8.50:3000` also works aboard).
 - See [SignalK Configuration](signalk.md) for the full plugin/data-source breakdown — data sources, derived data, alarms, automation, charts, weather, cloud integrations.
 
 ### KIP (Instrument Display)

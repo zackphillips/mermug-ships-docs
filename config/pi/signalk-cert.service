@@ -1,0 +1,9 @@
+# /etc/systemd/system/signalk-cert.service
+[Unit]
+Description=Renew Let's Encrypt certificate for signalk.mermug.com
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/signalk-cert renew
